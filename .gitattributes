@@ -1,0 +1,11 @@
+# 统一用 LF 入库：本仓库是跨平台的（Windows 开发 + 可能的 Linux CI/使用者）。
+# 不加这条时，core.autocrlf=true 会让 git 在下次 touch 文件时把工作区改成 CRLF，
+# 给"打补丁/比对文本"这类操作添麻烦。
+* text=auto eol=lf
+
+# 明确按文本处理的类型
+*.js   text eol=lf
+*.mjs  text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.md   text eol=lf

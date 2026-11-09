@@ -1,0 +1,28 @@
+dsh-compaction-selective
+=======================
+
+This project is licensed under the MIT License (see LICENSE).
+
+Third-party material
+--------------------
+
+The two 16x16 SVG icons used by the client UI
+(`IconChevronDownOutlineRegular` artwork and `IconCompactOutlineRegular` artwork)
+are taken from DeepSeek Harness:
+
+  @deepseek-ai/dsh-client-ui-primitives
+  https://github.com/deepseek-ai/deepseek-harness
+  License: MIT
+
+DeepSeek Harness itself is MIT licensed. We keep this notice because the MIT
+License requires the copyright and permission notice to accompany copies of the
+covered material. No DeepSeek branding is used to imply endorsement; see
+BRAND-COMPLIANCE notes in README.
+
+Design and platform knowledge
+-----------------------------
+
+The plugin builds on the public plugin contracts of DeepSeek Harness
+(slot contracts, `compactRegion`, `dsh.bundle.patch`, `dsh.client`). Where a
+behaviour of the host is relied upon, it is documented in
+`COMPATIBILITY-AUDIT.md` with the version tag and commit that were inspected.

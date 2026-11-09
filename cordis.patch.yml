@@ -1,0 +1,17 @@
+# dsh-compaction-selective bundle 层：把插件行挂进组合。
+#
+# 为什么需要这个文件（而不是把行写在 profile 的 cordis.patch.yml 里）：
+#   只有 bundle 形态的包才会出现在「插件」面板的**已安装**列表里，才有自己的详情页；
+#   而设置表单要挂在那个详情页上（客户端 `plugins.bundle.config` 槽位，按包名分发）。
+#   profile 的 `dsh.profile.bundles` 里列出本包名后，这一层就会被应用。
+#
+# 回滚：从 profile 的 `dsh.profile.bundles` 里删掉本包名（或在这里整块注释掉）→ 重启。
+- insert:
+    - id: compaction-selective
+      name: dsh-compaction-selective
+      # config 全部可省，默认值即 DESIGN.md §12 的决策；也可以在插件详情页里改（写插件的 JSON 设置文件）：
+      #   minShadowedTokens: 3000    # 低于它的压缩必然被官方「摘要更小」校验拒绝
+      #   maxSurfaceShare: 0.6       # 单次最多压缩可见历史的比例
+      #   approvalTimeoutMs: 180000  # 确认卡等待时间，超时视为未确认
+      #   maxPerTurn: 1              # 同一轮内最多压缩几次
+      #   foldSummary: true          # 是否启用「局部压缩」摘要模板

@@ -1,0 +1,18 @@
+# 依赖与构建产物（本插件没有构建步骤，node_modules 只是本地解析用）
+node_modules/
+
+# 本地补丁/备份/临时产物
+*.bak-*
+*.bak
+*.patched.js
+*.tmp
+*.log
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 个人/机器相关快照（不属于本包）
+snapshots/
