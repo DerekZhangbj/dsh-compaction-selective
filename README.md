@@ -119,10 +119,12 @@ The plugin rides on contracts that are documented in code but not API-frozen (sl
 upgrade: re-run `patches/apply-compaction-patch.ps1` (idempotent; fails loudly without touching files if
 upstream changed shape) and `npm test`.
 
+Upstream ask for the missing API: [deepseek-ai/deepseek-harness#discussions/12813](https://github.com/deepseek-ai/deepseek-harness/discussions/12813).
+
 ## Tests
 
 ```bash
-npm test            # 125 assertions, no build step, no host required
+npm test            # 125 core assertions + 12 busy-state + 9 auto-cancel + render tree-check + slot handshake
 ```
 
 ## Attribution

@@ -112,10 +112,12 @@ DSH 自带的压缩只会把**最老的一段**历史折起来（`/compact` 也�
 它会被持续维护并跟随 DSH 版本。**DSH 升级后请**：重跑 `patches/apply-compaction-patch.ps1`（幂等；
 上游改动形状时会报错且不改文件），再跑 `npm test`。
 
+缺失 API 的上游需求帖：[deepseek-ai/deepseek-harness#discussions/12813](https://github.com/deepseek-ai/deepseek-harness/discussions/12813)。
+
 ## 测试
 
 ```bash
-npm test            # 125 项断言，无构建步骤，不需要宿主
+npm test            # 125 项内核断言 + 12 项执行态 + 9 项自动取消 + 表单树校验 + 槽位握手
 ```
 
 ## 署名
