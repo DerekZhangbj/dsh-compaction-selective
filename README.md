@@ -9,6 +9,28 @@ finished turns to compact**, and the span is folded into one summary.
 
 Built on DeepSeek Harness — an unofficial community plugin, not affiliated with or endorsed by DeepSeek.
 
+**English** | [简体中文](README.zh.md)
+
+---
+
+## Screenshots
+
+**1 · The `+` menu → 指令 → 选择性压缩** — the plugin also lives where every DSH command lives.
+
+![The + menu showing the 选择性压缩 command](docs/images/menu.png)
+
+**2 · The composer panel** — session overview, token estimates for the last 1/2/3/5 turns, an explicit
+turn range, and the turn table. Actions use a two-step confirm that auto-cancels after 5 seconds.
+
+![The selective compaction panel with quick picks and a turn table](docs/images/panel.png)
+
+**3 · The approval card (tool path)** — exact range, node count and estimated release; nothing changes
+until a human presses "确认压缩".
+
+![The confirmation card shown before a fold](docs/images/approval.png)
+
+*Screenshots are redacted: session text outside the UI being demonstrated is blurred.*
+
 ---
 
 ## What it does
@@ -78,6 +100,8 @@ page). Effective config = built-in defaults < `config:` on the bundle row < sett
 - Panel actions sit behind a **two-step confirm with a 5-second auto-cancel**.
 
 ## Compatibility
+
+**Supported: DSH `0.2.0` – `0.2.2`.**
 
 | Version | Status |
 |---|---|

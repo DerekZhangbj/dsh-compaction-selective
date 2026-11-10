@@ -19,7 +19,8 @@
     "patches/",
     "README.md",
     "NOTICE",
-    "LICENSE"
+    "LICENSE",
+    "README.zh.md"
   ],
   "exports": {
     ".": {
