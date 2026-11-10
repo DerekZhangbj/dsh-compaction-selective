@@ -823,5 +823,23 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 	ok('选中后 POST /fold 且带 confirm 与轮数', posted?.url === '/compaction-selective/fold' && posted.body.recent_turns === 2 && posted.body.confirm === true && posted.body.sessionId === 'S1', JSON.stringify(posted));
 	globalThis.fetch = originalFetch;
 }
+// ── i18n：表一致性 + 语言判定 + 英文查表 ──
+{
+	const { EN, makeT, pickLang } = await import('../lib/i18n.js');
+	const { readFileSync: readSync } = await import('node:fs');
+	const clientSrc = readSync(new URL('../lib/client.js', import.meta.url), 'utf8');
+	// 客户端那份表只需覆盖它用到的文案：断言方向是「客户端表 ⊆ 宿主表」
+	const clientBlock = clientSrc.slice(clientSrc.indexOf('const EN_UI = {'));
+	const clientKeys = [...clientBlock.slice(0, clientBlock.indexOf('};')).matchAll(/'([^']+)':/g)].map((m) => m[1]);
+	const missing = clientKeys.filter((zh) => !(zh in EN));
+	ok('客户端英文表是宿主表的子集', missing.length === 0, missing.slice(0, 5).join(' | '));
+	ok('英文模式查表生效', makeT('en')('确认压缩') === 'Confirm compaction', makeT('en')('确认压缩'));
+	ok('中文模式原样返回', makeT('zh')('确认压缩') === '确认压缩', makeT('zh')('确认压缩'));
+	ok('未知键原样返回（不漏 undefined）', makeT('en')('不存在的文案') === '不存在的文案');
+	ok('locale=en-US → en', pickLang({ locale: { getLocale: () => ({ value: { locale: 'en-US' } }) } }) === 'en');
+	ok('locale=zh-CN → zh', pickLang({ locale: { getLocale: () => ({ value: { locale: 'zh-CN' } }) } }) === 'zh');
+	ok('没有 locale 服务时保守用 zh', pickLang({}) === 'zh');
+}
+
 console.log(`\n结果：${passed} 通过 / ${failed} 失败`);
 assert.ok(failed === 0, `${failed} 项断言失败`);

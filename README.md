@@ -31,7 +31,7 @@ until a human presses "确认压缩" *（Confirm compaction）*.
 
 *Screenshots are redacted: session text outside the UI being demonstrated is blurred.*
 
-*The UI is currently **Chinese-only** — the plugin has no i18n layer yet, so an English user sees Chinese labels. Tracked as a roadmap item in [docs/PLATFORM-NOTES.md](docs/PLATFORM-NOTES.md).*
+*The UI follows the host UI language (**English / 中文**). If the host reports no language, labels stay Chinese. Screenshots were taken in a Chinese-language host.*
 
 ---
 
