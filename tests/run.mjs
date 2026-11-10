@@ -537,14 +537,24 @@ group('11. apply 装配（注册工具 + 安装摘要模板）');
 	});
 	const applyCtx = makeApplyCtx();
 	apply(applyCtx, {});
-	ok('注册了 compact_turns', registered.length === 1 && registered[0].name === 'compact_turns', JSON.stringify(registered.map((d) => d.name)));
-	ok('apply 没有告警（有服务面时，preset 模块缺失属预期）', logs.every((line) => line.startsWith('info:')), logs.join(' | '));
-	ok('preset 缺失的说明指向服务面', logs.some((line) => line.includes('preset=服务面') || line.includes('preset=ok')), logs.join(' | '));
-	ok('注册了 /compaction-selective 路由', routes.length === 1 && routes[0].path === '/compaction-selective' && routes[0].kind === 'prefix', JSON.stringify(routes.map((r) => r.path)));
-	ok('宿主侧**不**注册 /fold 命令（由客户端 commandUi 贡献独占这个名字，同名会让候选合成报错）', commands.length === 0, JSON.stringify(commands.map((c) => c.name)));
-	ok('挂了 internal/service 与 agent/pre-step 两个钩子', listeners.map((l) => l.name).sort().join(',') === 'agent/pre-step,internal/service', listeners.map((l) => l.name).join(','));
-	ok('pre-step 钩子带 prepend（要早于自动压缩）', listeners.find((l) => l.name === 'agent/pre-step')?.options?.prepend === true);
-	ok('两个钩子都带 global（绕开作用域过滤，否则根上的监听器收不到 preset 域的事件）', listeners.every((l) => l.options?.global === true), JSON.stringify(listeners.map((l) => l.options)));
+	// GitHub Runner 上没有 DSH 宿主包 → apply() 降级，集成段无从断言。
+	// **跳过而不是伪造通过**，并且打印出来（CI 日志里能看到 ⏭）。
+	const hostAvailable = loadReport.tools.ok !== false;
+	const expect = (name, value, detail) => {
+		if (!hostAvailable) {
+			console.log(`  ⏭ 跳过 ${name}（无 @deepseek-ai/dsh-tools）`);
+			return;
+		}
+		ok(name, typeof value === 'function' ? value() : value, detail);
+	};
+	expect('注册了 compact_turns', registered.length === 1 && registered[0].name === 'compact_turns', JSON.stringify(registered.map((d) => d.name)));
+	expect('apply 没有告警（有服务面时，preset 模块缺失属预期）', logs.every((line) => line.startsWith('info:')), logs.join(' | '));
+	expect('preset 缺失的说明指向服务面', logs.some((line) => line.includes('preset=服务面') || line.includes('preset=ok')), logs.join(' | '));
+	expect('注册了 /compaction-selective 路由', routes.length === 1 && routes[0].path === '/compaction-selective' && routes[0].kind === 'prefix', JSON.stringify(routes.map((r) => r.path)));
+	expect('宿主侧**不**注册 /fold 命令（由客户端 commandUi 贡献独占这个名字，同名会让候选合成报错）', commands.length === 0, JSON.stringify(commands.map((c) => c.name)));
+	expect('挂了 internal/service 与 agent/pre-step 两个钩子', listeners.map((l) => l.name).sort().join(',') === 'agent/pre-step,internal/service', listeners.map((l) => l.name).join(','));
+	expect('pre-step 钩子带 prepend（要早于自动压缩）', listeners.find((l) => l.name === 'agent/pre-step')?.options?.prepend === true);
+	expect('两个钩子都带 global（绕开作用域过滤，否则根上的监听器收不到 preset 域的事件）', listeners.every((l) => l.options?.global === true), JSON.stringify(listeners.map((l) => l.options)));
 
 	// ① 模拟 preset 组里的隔离实例注册：internal/service 事件把模板装上去
 	const scopedEngine = {
@@ -553,17 +563,17 @@ group('11. apply 装配（注册工具 + 安装摘要模板）');
 		compactRegion: async () => ({}),
 	};
 	const scopedScope = makeScope({ compaction: scopedEngine });
-	listeners.find((l) => l.name === 'internal/service').listener.call(scopedScope, 'compaction', scopedEngine);
-	ok('internal/service 事件把模板装到隔离实例上（用事件参数里的实例）', isFoldSummarizerInstalled(scopedEngine) === true);
+	if (hostAvailable) listeners.find((l) => l.name === 'internal/service').listener.call(scopedScope, 'compaction', scopedEngine);
+	expect('internal/service 事件把模板装到隔离实例上（用事件参数里的实例）', isFoldSummarizerInstalled(scopedEngine) === true);
 	// 只给 name、不给实例时，回退到从作用域取
 	const fallbackEngine = {
 		config: { maxTokens: 512, summarizationProvider: '', summarizationModel: '' },
 		summarize: async () => ({ summary: [], rawOutput: [] }),
 		compactRegion: async () => ({}),
 	};
-	listeners.find((l) => l.name === 'internal/service').listener.call(makeScope({ compaction: fallbackEngine }), 'compaction');
-	ok('没有实例参数时回退到作用域取服务', isFoldSummarizerInstalled(fallbackEngine) === true);
-	ok('非 compaction 的服务不触发安装', isFoldSummarizerInstalled(scopedScope.compaction) === true);
+	if (hostAvailable) listeners.find((l) => l.name === 'internal/service').listener.call(makeScope({ compaction: fallbackEngine }), 'compaction');
+	expect('没有实例参数时回退到作用域取服务', isFoldSummarizerInstalled(fallbackEngine) === true);
+	expect('非 compaction 的服务不触发安装', isFoldSummarizerInstalled(scopedScope.compaction) === true);
 
 	// ② 模拟每轮第一步：通过 agent.ctx 找到实例并安装
 	const preStepEngine = {
@@ -573,14 +583,14 @@ group('11. apply 装配（注册工具 + 安装摘要模板）');
 	};
 	const agent = { id: 'A1', ctx: makeScope({ compaction: preStepEngine }) };
 	let nextCalled = false;
-	listeners.find((l) => l.name === 'agent/pre-step').listener({ agent }, () => { nextCalled = true; });
-	ok('agent/pre-step 钩子装上模板并放行 next()', isFoldSummarizerInstalled(preStepEngine) === true && nextCalled === true);
+	if (hostAvailable) listeners.find((l) => l.name === 'agent/pre-step').listener({ agent }, () => { nextCalled = true; });
+	expect('agent/pre-step 钩子装上模板并放行 next()', isFoldSummarizerInstalled(preStepEngine) === true && nextCalled === true);
 
 	// ③ foldSummary=false：仍注册工具与钩子（实例捕获不能连坐），但不装模板
 	const engine2 = { config: {}, summarize: async () => ({}) };
 	const listeners2 = [];
 	apply(makeApplyCtx({ compaction: engine2, on: (name, listener, options) => listeners2.push({ name, listener, options }) }), { foldSummary: false });
-	ok('foldSummary=false 时不装模板，但捕获钩子照挂（实测踩过的死局）', isFoldSummarizerInstalled(engine2) === false && listeners2.length === 2, listeners2.map((l) => l.name).join(','));
+	expect('foldSummary=false 时不装模板，但捕获钩子照挂（实测踩过的死局）', isFoldSummarizerInstalled(engine2) === false && listeners2.length === 2, listeners2.map((l) => l.name).join(','));
 
 	// ④ enabled=false 时什么都不注册
 	const engine3 = { config: {}, summarize: async () => ({}) };
@@ -601,7 +611,8 @@ group('12. runFold 返回值过 output.schema（宿主那句 value.reason must b
 	} catch (error) {
 		console.log(`     无法取得宿主校验器：${error.message}`);
 	}
-	ok('取到宿主的 validateJsonSchemaValue', typeof validate === 'function');
+	if (loadReport.tools.ok === false) console.log('  ⏭ 跳过 取到宿主的 validateJsonSchemaValue（无 @deepseek-ai/dsh-tools）');
+	else ok('取到宿主的 validateJsonSchemaValue', typeof validate === 'function');
 	if (typeof validate !== 'function' || typeof realDefineTool !== 'function') {
 		console.log('     跳过返回值校验（缺校验器或 defineTool）');
 	} else {
