@@ -1,0 +1,38 @@
+/**
+ * 离线自检：跑一遍真实的 lib/client.js 握手，检查两个槽位注册项与 commandUi 贡献。
+ * 用法：node check-client-handshake.mjs
+ */
+import { pathToFileURL } from 'node:url'
+
+const clientPath = new URL('../../lib/client.js', import.meta.url)
+let handshake = null
+globalThis.window = { __ModuleLoader__: { load: (spec) => { handshake = spec } } }
+await import(`${clientPath.href}?t=${Date.now()}`)
+
+const React = {
+	Component: class { constructor(props) { this.props = props; this.state = {}; } setState() {} },
+	createElement: (type, props, ...children) => ({ type, props, children }),
+	useState: (initial) => [initial, () => {}],
+	useEffect: () => {},
+	useCallback: (fn) => fn,
+	useMemo: (factory) => factory(),
+}
+const mod = handshake.factory((name) => {
+	if (name === 'react') return React
+	throw new Error(`unexpected require: ${name}`)
+})
+
+const registrations = []
+let contribution = null
+mod.apply({
+	slots: { inject: (name, factory) => factory(), register: (options) => { registrations.push(options); return () => {} } },
+	commandUi: { register: (value) => { contribution = value; return () => {} } },
+})
+
+const inputLeft = registrations.find((row) => row.name === 'conversation.input.left')
+const bundleConfig = registrations.find((row) => row.name === 'plugins.bundle.config')
+console.log('槽位注册项：', registrations.map((row) => `${row.name}${row.key ? `[key=${row.key}]` : `[id=${row.id}]`}`).join('  '))
+console.log('input.left 的 inject 是函数：', typeof inputLeft?.inject === 'function')
+console.log('inject("S-123") 的回传：', JSON.stringify(inputLeft?.inject?.('S-123')))
+console.log('plugins.bundle.config 的 key：', bundleConfig?.key)
+console.log('commandUi 贡献：', contribution === null ? '（无）' : `${contribution.name} / label=${contribution.label()} / ui=${contribution.ui.kind} / icon=${typeof contribution.icon}`)
