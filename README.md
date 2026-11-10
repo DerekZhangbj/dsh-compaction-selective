@@ -31,6 +31,8 @@ until a human presses "确认压缩".
 
 *Screenshots are redacted: session text outside the UI being demonstrated is blurred.*
 
+*The UI is currently **Chinese-only** — the plugin has no i18n layer yet, so an English user sees Chinese labels. Tracked as a roadmap item in [docs/PLATFORM-NOTES.md](docs/PLATFORM-NOTES.md).*
+
 ---
 
 ## What it does
