@@ -139,6 +139,13 @@ const results = []
 	results.push(['英文下 meta 行变英文', hasEnglishMeta, all.slice(0, 120)])
 	results.push(['英文下 meta 行不再出现中文', !hasChineseMeta, all.slice(0, 120)])
 }
+	{
+		// 快捷按钮文案（"1 轮 ≈11.0k"）在英文下必须是 "1 turn ≈11.0k"
+		const enTree = render(base, 'en-US')
+		const labels = nodes(enTree).filter((row) => row.type === 'button').flatMap((row) => texts(row)).join(' | ')
+		results.push(['英文下快捷按钮不再含“轮”', !labels.includes('轮'), labels.slice(0, 100)])
+		results.push(['英文下快捷按钮含 turn', labels.includes('turn'), labels.slice(0, 100)])
+	}
 let failed = 0
 for (const [name, pass] of results) {
 	console.log(`  ${pass ? '✔' : '✘'} ${name}`)
