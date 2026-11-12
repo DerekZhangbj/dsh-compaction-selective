@@ -55,7 +55,7 @@ function makeReact(values) {
 }
 
 /** 用给定的 hook 取值渲染一次展开的面板。 */
-function render(values) {
+function render(values, locale = 'zh-CN') {
 	const React = makeReact(values)
 	const mod = handshake.factory((name) => {
 		if (name === 'react') return React
@@ -65,6 +65,7 @@ function render(values) {
 	mod.apply({
 		slots: { inject: (name, factory) => factory(), register: (options, factory) => { if (options?.name === 'conversation.input.left') element = factory(); return () => {} } },
 		commandUi: { register: () => () => {} },
+		locale: { getSnapshot: () => ({ active: locale, revision: 1 }) },
 	})
 	if (element === null) throw new Error('没拿到 conversation.input.left 的组件')
 	return element.type(element.props ?? {})
@@ -129,6 +130,15 @@ const results = []
 	results.push(['无补丁时动作按钮全部禁用', actionButtons.length > 0 && actionButtons.every((row) => row.props?.disabled === true), `共 ${actionButtons.length} 个`])
 }
 
+// ── 英文渲染：meta 行与表头必须跟着变 ──
+{
+	const tree = render(base, 'en-US')
+	const all = texts(tree).join(' | ')
+	const hasEnglishMeta = all.includes('visible history') && all.includes('fold channel') && all.includes('summary template')
+	const hasChineseMeta = all.includes('可见历史') || all.includes('压缩通道')
+	results.push(['英文下 meta 行变英文', hasEnglishMeta, all.slice(0, 120)])
+	results.push(['英文下 meta 行不再出现中文', !hasChineseMeta, all.slice(0, 120)])
+}
 let failed = 0
 for (const [name, pass] of results) {
 	console.log(`  ${pass ? '✔' : '✘'} ${name}`)
