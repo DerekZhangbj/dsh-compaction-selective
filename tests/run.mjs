@@ -792,6 +792,20 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 	// `PopupSelectSpec` 没有 `title` 字段（d.ts 实测：kind/searchMode/searchLabels/options/onSelect），
 	// 所以「选中即执行」只能靠 description 与选项文案表达，别再写一个被忽略的 title。
 	ok('popupSelect 不带 title（契约里没有这个字段）', contribution.ui.title === undefined, String(contribution.ui.title));
+// ── ＋ 菜单入口：常驻 + 无补丁时给解释性选项 ──
+{
+	const originalFetch = globalThis.fetch;
+	let body = { session: { resolution: { patched: false }, suggestions: [{ recent: 2, ok: true, label: '2', tokens: 100, nodes: 3 }] } };
+	globalThis.fetch = async () => ({ ok: true, status: 200, text: async () => JSON.stringify(body) });
+	const contribution = registered.command;
+	ok('入口常驻（available 恒为 true）', contribution.available?.({ sessionId: 'S1' }) === true, String(contribution.available?.({ sessionId: 'S1' })));
+	const noPatch = await contribution.ui.options({ sessionId: 'S1' });
+	ok('无补丁时只给一条解释性选项', noPatch.length === 1 && noPatch[0].id === 'nopatch', JSON.stringify(noPatch));
+	body = { session: { resolution: { patched: true }, suggestions: [{ recent: 2, ok: true, label: '2', tokens: 100, nodes: 3 }] } };
+	const withPatch = await contribution.ui.options({ sessionId: 'S1' });
+	ok('有补丁时给出可用的轮数选项', withPatch.length === 1 && withPatch[0].id === 'recent-2', JSON.stringify(withPatch));
+	globalThis.fetch = originalFetch;
+}
 	ok('警示写在 description 里', contribution.description().includes('没有二次确认'), contribution.description());
 	delete globalThis.window;
 
@@ -849,6 +863,7 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 	}
 	ok('没有 locale 服务时保守用 zh', pickLang({}) === 'zh');
 }
+
 
 console.log(`\n结果：${passed} 通过 / ${failed} 失败`);
 assert.ok(failed === 0, `${failed} 项断言失败`);
