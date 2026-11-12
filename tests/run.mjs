@@ -825,7 +825,7 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 }
 // ── i18n：表一致性 + 语言判定 + 英文查表 ──
 {
-	const { EN, makeT, pickLang } = await import('../lib/i18n.js');
+	const { EN, makeT, pickLang, createT } = await import('../lib/i18n.js');
 	const { readFileSync: readSync } = await import('node:fs');
 	const clientSrc = readSync(new URL('../lib/client.js', import.meta.url), 'utf8');
 	// 客户端那份表只需覆盖它用到的文案：断言方向是「客户端表 ⊆ 宿主表」
@@ -836,8 +836,17 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 	ok('英文模式查表生效', makeT('en')('确认压缩') === 'Confirm compaction', makeT('en')('确认压缩'));
 	ok('中文模式原样返回', makeT('zh')('确认压缩') === '确认压缩', makeT('zh')('确认压缩'));
 	ok('未知键原样返回（不漏 undefined）', makeT('en')('不存在的文案') === '不存在的文案');
-	ok('locale=en-US → en', pickLang({ locale: { getLocale: () => ({ value: { locale: 'en-US' } }) } }) === 'en');
-	ok('locale=zh-CN → zh', pickLang({ locale: { getLocale: () => ({ value: { locale: 'zh-CN' } }) } }) === 'zh');
+	ok('locale=en-US → en（真实形状 getSnapshot().active）', pickLang({ locale: { getSnapshot: () => ({ active: 'en-US', revision: 1 }) } }) === 'en');
+	ok('locale=zh-CN → zh', pickLang({ locale: { getSnapshot: () => ({ active: 'zh-CN', revision: 1 }) } }) === 'zh');
+	{
+		// 切换语言后**无需重启**（T 每次调用都重读）
+		let current = { locale: { getSnapshot: () => ({ active: 'zh-CN' }) } };
+		const T2 = createT(() => current);
+		const before = T2('确认压缩');
+		current = { locale: { getSnapshot: () => ({ active: 'en-US' }) } };
+		const after = T2('确认压缩');
+		ok('切换语言后同一个 T 立即跟随', before === '确认压缩' && after === 'Confirm compaction', before + ' -> ' + after);
+	}
 	ok('没有 locale 服务时保守用 zh', pickLang({}) === 'zh');
 }
 
