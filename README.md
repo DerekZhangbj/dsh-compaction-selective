@@ -9,7 +9,7 @@ compact**, and exactly that span is folded into one summary.
 
 Built on DeepSeek Harness — an unofficial community plugin, not affiliated with or endorsed by DeepSeek.
 
-**简体中文简介**：由人指定「压缩哪几轮」的 DeepSeek Harness 插件——把已经结束的一段对话折成一条摘要，
+由人指定「压缩哪几轮」的 DeepSeek Harness 插件——把已经结束的一段对话折成一条摘要，
 而不是只能让系统挑最老的那段。工具调用、输入框面板、`+` 菜单三个入口，执行前必须人工确认。
 
 **English** | [简体中文](README.zh.md)
@@ -146,16 +146,6 @@ If you applied the local patch, restore the `*.bak-*` backups written by the pat
 ## License
 
 MIT — see [LICENSE](./LICENSE).
-
----
-
-## 中文说明（摘录）
-
-- **它是什么**：由人指定「压缩哪几轮」的插件，补上 DSH「空闲态 + 指定区间」这个缺口。
-- **怎么用**：① 对话里说「压缩最近两轮 / 压缩 34-35 轮」→ 会弹确认卡；② 输入框左侧「选择性压缩」按钮 → 面板里看轮次、选范围、两段确认；③ `+` 菜单 → 指令。
-- **桌面端差异**：桌面应用的核心打包在 `app.asar` 里，本地补丁无处可落，所以**只有「面板里直接折」这一项不可用**；工具路径（对话指令 + 确认卡）完全可用。插件会自动禁用动作按钮并提示改用对话指令，不会让人点了才报错。
-- **原文不会丢**：被压缩的轮次仍保留在会话日志里，摘要可展开。
-- **护栏**：必须人工确认、只压已结束的轮次、不碰系统提示、同轮最多一次、判定不出会话就让你选（绝不猜）。
 
 ---
 
