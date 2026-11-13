@@ -67,6 +67,15 @@ form instead** — it never leaves you clicking into an error.
 
 ## Install
 
+**From npm** (a released version; the package still has to be enabled as a bundle in a DSH profile):
+
+```text
+cd ~/.dsh/profiles/<profile>
+npm add dsh-compaction-selective@0.1.8
+# then add "dsh-compaction-selective" to dsh.profile.bundles in that profile's package.json
+```
+
+**From a checkout** (`link:` — for development or trying `main`):
 ```text
 # 1. link the package into your DSH profile  (~/.dsh/profiles/<profile>/package.json)
 "dependencies": { "dsh-compaction-selective": "link:<path-to-this-repo>" }

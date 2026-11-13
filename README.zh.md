@@ -60,6 +60,15 @@ DSH 自带的压缩只会把**最老的一段**历史折起来（`/compact` 也�
 
 ## 安装
 
+**从 npm 装**（已发布版本；注意包装上后仍需在 profile 里作为 bundle 启用）：
+
+```text
+cd ~/.dsh/profiles/<profile>
+npm add dsh-compaction-selective@0.1.8
+# 然后在该 profile 的 package.json 里把 "dsh-compaction-selective" 加进 dsh.profile.bundles
+```
+
+**从仓库装**（`link:`，适合改代码或跟 `main`）：
 ```text
 # 1. 把包 link 进 DSH profile（~/.dsh/profiles/<profile>/package.json）
 "dependencies": { "dsh-compaction-selective": "link:<本仓库路径>" }
