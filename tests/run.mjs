@@ -838,10 +838,19 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 	globalThis.fetch = originalFetch;
 }
 // ── i18n：表一致性 + 语言判定 + 英文查表 ──
+
 {
-	const { EN, makeT, pickLang, createT } = await import('../lib/i18n.js');
+	const { EN, makeT, pickLang, createT, setReportedLocale } = await import('../lib/i18n.js');
 	const { readFileSync: readSync } = await import('node:fs');
 	const clientSrc = readSync(new URL('../lib/client.js', import.meta.url), 'utf8');
+	// 宿主拿不到浏览器端 locale 时，用客户端上报的值兜底（确认卡靠这条变英文）
+	{
+		setReportedLocale('en-US');
+		ok('上报 en-US 后宿主兜底为英文', pickLang({}) === 'en', pickLang({}));
+		setReportedLocale('zh-CN');
+		ok('上报 zh-CN 后宿主兜底为中文', pickLang({}) === 'zh', pickLang({}));
+		setReportedLocale(null);
+	}
 	// 客户端那份表只需覆盖它用到的文案：断言方向是「客户端表 ⊆ 宿主表」
 	const clientBlock = clientSrc.slice(clientSrc.indexOf('const EN_UI = {'));
 	const clientKeys = [...clientBlock.slice(0, clientBlock.indexOf('};')).matchAll(/'([^']+)':/g)].map((m) => m[1]);
