@@ -135,3 +135,8 @@ npm test            # 125 项内核断言 + 12 项执行态 + 9 项自动取消 
 ## 许可
 
 MIT —— 见 [LICENSE](./LICENSE)。
+
+---
+
+**关键词**：选择性压缩 · 压缩上下文 · 上下文管理 · DeepSeek Harness 插件 · 指定区间压缩 ·
+selective compaction · context compaction

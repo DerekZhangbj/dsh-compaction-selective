@@ -2,12 +2,15 @@
 
 **Human-directed selective compaction for DeepSeek Harness (DSH).**
 
-DSH's built-in compaction only folds *the oldest span* of the conversation (and `/compact` takes no
-arguments). Often the span you actually want to get rid of is a *recent* side branch — a debugging
-detour, a dead-end Q&A, a pile of tool output. This plugin adds the missing entry point: **you say which
-finished turns to compact**, and the span is folded into one summary.
+DSH's built-in compaction always folds *the oldest span*, and `/compact` accepts no arguments.
+But the span you usually want to get rid of is a *recent* side branch — a debugging detour, a dead-end
+Q&A, a pile of tool output. This plugin adds the missing entry point: **you say which finished turns to
+compact**, and exactly that span is folded into one summary.
 
 Built on DeepSeek Harness — an unofficial community plugin, not affiliated with or endorsed by DeepSeek.
+
+**简体中文简介**：由人指定「压缩哪几轮」的 DeepSeek Harness 插件——把已经结束的一段对话折成一条摘要，
+而不是只能让系统挑最老的那段。工具调用、输入框面板、`+` 菜单三个入口，执行前必须人工确认。
 
 **English** | [简体中文](README.zh.md)
 
@@ -153,3 +156,8 @@ MIT — see [LICENSE](./LICENSE).
 - **桌面端差异**：桌面应用的核心打包在 `app.asar` 里，本地补丁无处可落，所以**只有「面板里直接折」这一项不可用**；工具路径（对话指令 + 确认卡）完全可用。插件会自动禁用动作按钮并提示改用对话指令，不会让人点了才报错。
 - **原文不会丢**：被压缩的轮次仍保留在会话日志里，摘要可展开。
 - **护栏**：必须人工确认、只压已结束的轮次、不碰系统提示、同轮最多一次、判定不出会话就让你选（绝不猜）。
+
+---
+
+**关键词 / Keywords**：选择性压缩 · 压缩上下文 · 上下文管理 · DeepSeek Harness 插件 · DSH plugin ·
+selective compaction · context compaction · context management · compact specific turns
