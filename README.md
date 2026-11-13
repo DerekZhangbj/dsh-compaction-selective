@@ -18,17 +18,17 @@ Built on DeepSeek Harness — an unofficial community plugin, not affiliated wit
 
 ## Screenshots
 
-**1 · The `+` menu → 指令 *（Commands）* → 选择性压缩 *（Selective compaction）*** — the plugin also lives where every DSH command lives.
+**1 · The `+` menu → Commands → *Selective compaction*** — the plugin also lives where every DSH command lives.
 
 ![The + menu showing the 选择性压缩 command](docs/images/menu.png)
 
-**2 · The composer panel** (labels are Chinese: 压缩 = compact) — session overview, token estimates for the last 1/2/3/5 turns, an explicit
-turn range, and the turn table. Actions use a two-step confirm that auto-cancels after 5 seconds.
+**2 · The composer panel** — session overview, token estimates for the last 1/2/3/5 turns, an explicit turn range, and the turn table.
+Actions use a two-step confirm that auto-cancels after 5 seconds.
 
 ![The selective compaction panel with quick picks and a turn table](docs/images/panel.png)
 
 **3 · The approval card (tool path)** — exact range, node count and estimated release; nothing changes
-until a human presses "确认压缩" *（Confirm compaction）*.
+until a human presses *Confirm compaction*.
 
 ![The confirmation card shown before a fold](docs/images/approval.png)
 
