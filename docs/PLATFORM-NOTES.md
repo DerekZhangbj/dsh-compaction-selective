@@ -20,6 +20,8 @@
 - 桌面端用的是**另一个 profile**：`~/.dsh/profiles/desktop`（web 端是 `profiles/web`）。
   **插件必须分别装进两个 profile**（`link:` 依赖 + `dsh.profile.bundles` + 目录联接）。
 
+> 需要在 upstream 讨论里解释「桌面端为何不行」时，直接引用 `docs/UPSTREAM-REPLY.md`（含可直接粘贴的中英段落与追问预案）。
+
 ## 2. `engines.dsh` 是安装闸门，不是文档
 
 - DSH 0.2.1 起，`package.json` 的 `engines.dsh` **存在即单独判定，并忽略 `peerDependencies`**；
