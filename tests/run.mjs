@@ -874,5 +874,26 @@ group('15. commandUi 贡献（＋ 菜单 → 指令）');
 }
 
 
+
+// ── i18n 覆盖：源码里每个 T('…') 字面量都必须有英文词条 ──
+{
+	const { EN } = await import('../lib/i18n.js');
+	const { readFileSync: readSync2 } = await import('node:fs');
+	const sources = ['index.js', 'host-api.js', 'client.js'].map((name) =>
+		readSync2(new URL(`../lib/${name}`, import.meta.url), 'utf8'));
+	// 抓 T('…') 或 T("…") —— 只取单参数、单行、非模板的形式
+	const literal = /T\(\s*'([^'\\\n]+)'\s*\)|T\(\s*"([^"\\\n]+)"\s*\)/g;
+	const seen = new Set();
+	const missing = [];
+	for (const src of sources) {
+		for (const match of src.matchAll(literal)) {
+			const key = match[1] ?? match[2];
+			if (key === undefined || seen.has(key)) continue;
+			seen.add(key);
+			if (!(key in EN)) missing.push(key);
+		}
+	}
+	ok(`每个 T( 字面量都在英文表里（共 ${seen.size} 个）`, missing.length === 0, missing.slice(0, 6).join(' | '));
+}
 console.log(`\n结果：${passed} 通过 / ${failed} 失败`);
 assert.ok(failed === 0, `${failed} 项断言失败`);

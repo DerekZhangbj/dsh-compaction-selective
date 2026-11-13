@@ -1,6 +1,6 @@
 {
   "name": "dsh-compaction-selective",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": false,
   "description": "Human-directed selective compaction for DeepSeek Harness: fold an explicitly requested span of earlier turns (recent or arbitrary) into one summary, with a mandatory approval prompt and a fold-shaped summary template.",
   "type": "module",
