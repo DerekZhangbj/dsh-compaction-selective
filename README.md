@@ -34,7 +34,7 @@ until a human presses *Confirm compaction*.
 
 *Screenshots are redacted: session text outside the UI being demonstrated is blurred.*
 
-*The UI follows the host UI language (**English / 中文**). If the host reports no language, labels stay Chinese. Screenshots were taken in a Chinese-language host.*
+*The UI follows the host UI language — English or Chinese. If the host reports no language, labels stay Chinese. Screenshots were taken with the host language set to English.*
 
 ---
 
