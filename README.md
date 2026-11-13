@@ -20,7 +20,7 @@ Built on DeepSeek Harness — an unofficial community plugin, not affiliated wit
 
 **1 · The `+` menu → Commands → *Selective compaction*** — the plugin also lives where every DSH command lives.
 
-![The + menu showing the 选择性压缩 command](docs/images/menu.png)
+![The + menu showing the Selective compaction command](docs/images/menu.png)
 
 **2 · The composer panel** — session overview, token estimates for the last 1/2/3/5 turns, an explicit turn range, and the turn table.
 Actions use a two-step confirm that auto-cancels after 5 seconds.
